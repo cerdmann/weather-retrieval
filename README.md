@@ -25,23 +25,19 @@
 
 * Create and change into a new directory
 
-  ```mkdir weather-retrieval && cd weather-retrieval
-  ```
+  ```mkdir weather-retrieval && cd weather-retrieval```
 
 * Establish a new web api Project
 
-  ```dotnet new webapi
-  ```
+  ```dotnet new webapi```
 
 * Restore dependencies
 
-  ```dotnet restore
-  ```
+  ```dotnet restore```
 
 * Run and browse to your new api
 
-  ```dotnet run
-  ```
+  ```dotnet run```
 
   http://localhost:5000/api/values
 
@@ -120,7 +116,8 @@
     i.e.
 
     ```
-    git remote add origin https://github.com/cerdmann/weather-retrieval```
+    git remote add origin https://github.com/cerdmann/weather-retrieval
+    ```
 
   * Pull the README.md and license file from Github
 
