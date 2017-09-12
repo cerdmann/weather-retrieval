@@ -133,5 +133,154 @@
     * Commit the files with ```git commit -m "Initial Commit"```
     * Push the files to Github: ```git push origin master```
 
-* Add new functionality
-  * rest goes here
+* We are going to use a free weather api from the National Weather Service. Check out the API Use on the page: https://forecast-v3.weather.gov/documentation
+  * Try https://api.weather.gov/points/39.7456,-97.0892
+  * It looks like we can grab the hourly forecast from: https://api.weather.gov/points/39.7456,-97.0892/forecast/hourly or generically from: ```api.weather.gov/points/<latitude>,<longitude>/forecast/hourly```
+  * We will want to develop our web api like this:
+
+    ```/hourlyforecast?latitude=xxxx&longitude=yyyyy```
+  * There are other weather apis, the benefit of using this one is that there is no API Key. That may change in the future, so feel free to use another service if you like.
+* Since we will be pulling in json data, we need to add a library to our project. The way to do this in .NET Core is through the **weather-retrieval.csproj** file. Add: ```<PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />``` to the **ItemGroup **. Your final code should look like this:
+
+  ```
+  <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
+      <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
+  </ItemGroup
+  ```
+* Restore dependencies
+
+  ```dotnet restore```  
+
+* Take a look at the return from the weather api. We need to construct some types which capture the data we are interested in.
+  * Create a new folder under the root folder **weather-retrieval** named:
+
+    ```DataContracts```
+
+  * Create 3 new files with the following content:
+
+    * Filename: **HourlyWeather.cs**
+
+      ```
+      using System;
+
+      namespace weather_retrieval.DataContracts
+      {
+          public class HourlyWeather
+          {
+              public Properties properties;
+          }
+      ```
+
+    * Filename: **Properties.cs**
+
+      ```
+      using System;
+      using System.Collections.Generic;
+
+      namespace weather_retrieval.DataContracts
+      {
+          public class Properties
+          {
+              public List<Period> periods;
+          }
+      }
+      ```
+
+    * Filename: **Period.cs**
+
+      ```
+      using System;
+
+      namespace weather_retrieval.DataContracts
+      {
+          public class Period
+          {
+              public int number;
+              public string startTime;
+              public string endTime;
+              public int temperature;
+              public string temperatureUnit;
+              public string windSpeed;
+              public string windDirection;
+              public Uri icon;
+
+          }
+      }
+      ```
+
+* We do not need the default controller, and we need to add a new controller to handle the request for weather:
+  * Under the **Controllers** folder, delete the default controller file: ```ValuesController.cs```
+  * Under the **Controller** folder, add a new file with the following content:
+    * Filename: **HourlyForecastController.cs**
+
+      ```
+      using System;
+      using System.Collections.Generic;
+      using System.Net.Http;
+      using System.Threading.Tasks;
+      using Microsoft.AspNetCore.Mvc;
+      using System.Net.Http.Headers;
+      using System.Runtime.Serialization.Json;
+      using weather_retrieval.DataContracts;
+
+      namespace weather_retrieval.Controllers
+      {
+          [Route("[controller]")]
+          public class HourlyForecastController : Controller
+          {
+              // GET api/values
+              [HttpGet]
+              public async Task<IActionResult> Get(string latitude, string longitude)
+              {
+                if (String.IsNullOrEmpty(latitude) || String.IsNullOrEmpty(longitude))
+                {
+                  return NotFound("Latitude and Longitude are required: /hourlyforecast?latitude=xxxx&longitude=yyyy");
+                }
+
+                using (var client = new HttpClient())
+                {
+                  try
+                  {
+                    client.BaseAddress = new Uri("http://api.weather.gov");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Add("User-Agent", "web api client");
+
+                    var streamTask = client.GetStreamAsync($"/points/{latitude},{longitude}/forecast/hourly");
+
+                    var serializer = new DataContractJsonSerializer(typeof(HourlyWeather));
+
+                    var hourlyWeather = serializer.ReadObject(await streamTask) as HourlyWeather;
+
+                    return Ok(hourlyWeather.properties);
+                  }
+                  catch (HttpRequestException httpRequestException)
+                  {
+                    return NotFound("Could not retrieve hourly forecast");
+                  }
+                }
+              }
+          }
+        ```
+
+* Run and browse to your new api
+
+  ```dotnet run```
+
+  http://localhost:5000/hourlyforecast?latitude=39.7456&longitude=-97.0892
+
+* Once we've tested our application, let's push our new code to GitHub. In the root of your *weather-retrieval* application, execute the following commands to push your work:
+
+  ```
+  git add .
+  ```
+
+  On either operating system, complete the following steps:
+
+  ```
+  git commit -m "End of Lab"
+  git push origin master
+  ```
