@@ -1,6 +1,6 @@
 using System;
 
-namespace weather_retrieval.DataContracts
+namespace WeatherRetrieval.DataContracts
 {
     public class HourlyWeather
     {
