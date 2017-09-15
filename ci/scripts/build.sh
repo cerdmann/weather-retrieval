@@ -19,6 +19,8 @@ ARTIFACT=weather-retrieval.zip
 
 zip -r ../$ARTIFACT .
 
+cd ..
+
 COMMIT=$(git rev-parse HEAD)
 
 echo $ARTIFACT > ../artifact/release_name.txt
