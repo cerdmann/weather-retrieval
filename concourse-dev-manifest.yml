@@ -5,7 +5,7 @@ applications:
   memory: 512M
   disk: 1G
   instances: 2
-  path: ./weather-retrieval.tar.gz
+  path: ./weather-retrieval.zip
   services:
     - service-registry
   buildpack: dotnet_core_buildpack
