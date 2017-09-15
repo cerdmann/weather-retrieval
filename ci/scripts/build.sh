@@ -13,9 +13,10 @@ cd git-repo
 dotnet restore
 dotnet publish -r ubuntu.14.04-x64 --configuration Release -f netcoreapp2.0 --output published-app
 
+tar -zcvf weather-retrieval.tar.gz ./published-app
 zip -r weather-retrieval.zip ./published-app/*
 
-ARTIFACT=weather-retrieval.zip
+ARTIFACT=weather-retrieval.tar.gz
 COMMIT=$(git rev-parse HEAD)
 
 echo $ARTIFACT > ../artifact/release_name.txt
