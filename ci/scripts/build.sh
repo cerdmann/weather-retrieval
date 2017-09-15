@@ -29,5 +29,5 @@ cp -R ./published-app ../artifact/
 echo "----------------------------------------------"
 echo "Build Complete"
 ls -lah ../artifact
-ls-lah ../artifact/published-app
+ls -lah ../artifact/published-app
 echo "----------------------------------------------"
