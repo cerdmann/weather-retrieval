@@ -72,7 +72,7 @@
               body: artifact/release_notes.md
               commitish: artifact/release_commitish.txt
               globs:
-              - artifact/latlong-retrieval*.jar
+              - artifact/weather-retrieval.tar.gz
               - artifact/concourse-dev-manifest.yml
 
       - name: deploy-dev
@@ -85,7 +85,7 @@
           - put: deploy-dev
             params:
               manifest: gh-release/concourse-dev-manifest.yml
-              current_app_name: latlong-retrieval
+              current_app_name: weather-retrieval
               path: gh-release
 
       - name: deploy-stage
@@ -97,7 +97,7 @@
           - put: deploy-stage
             params:
               manifest: gh-release/concourse-dev-manifest.yml
-              current_app_name: latlong-retrieval
+              current_app_name: weather-retrieval
               path: gh-release
 
       - name: deploy-prod
@@ -109,5 +109,5 @@
           - put: deploy-prod
             params:
               manifest: gh-release/concourse-dev-manifest.yml
-              current_app_name: latlong-retrieval
+              current_app_name: weather-retrieval
               path: gh-release
