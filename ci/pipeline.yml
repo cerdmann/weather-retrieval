@@ -72,7 +72,7 @@
               body: artifact/release_notes.md
               commitish: artifact/release_commitish.txt
               globs:
-              - artifact/weather-retrieval.tar.gz
+              - artifact/weather-retrieval.zip
               - artifact/concourse-dev-manifest.yml
 
       - name: deploy-dev
